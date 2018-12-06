@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-
+# pylint: disable=unbalanced-tuple-unpacking
 """
 AudioSplit takes in audio files and
 corresponding text files with times
@@ -24,68 +24,63 @@ Raises
 """
 
 __author__ = "Forrest Smith"
-__credits__ = ["Rob Knight"]
+__credits__ = ["Forrest Smith"]
 
 __version__ = "0.0.1"
 __maintainer__ = "Forrest Smith"
 __email__ = "fsmith2017@gmail.com"
 __status__ = "Development"
 
-import sys
-import os.path
+from fileutils import *
 
 class Track(object):
-    def __init__(self, trackName, length):
+    def __init__(self, trackName, length, metadata):
         self.trackName = trackName
         self.length = length
+        self.metadata = metadata
 
-def SplitTracks(inputPath, outputPath):
-    print('test')
+    def export(self):
+        print('exporting...')
 
 
-def getFiles(inputPath, outputPath):
-    result = []
-    result.append(sorted([file for file in os.listdir(inputPath) if file.endswith('.mp3')]))
-    result.append(sorted([file for file in os.listdir(inputPath) if file.endswith('.mp3')]))
+def SplitTrack(inPath, AudioPath, ListPath):
 
-    return result
+    """Returns a list of valid audio files and track listings
 
-def getInOutPath():
+    Keyword arguments:
+        AudioPath -- the path of the audio file
+        ListingPath -- the path of the listing file
     """
-    Validate user input and set input path
+    print('vv' + '---'*20 + 'vv')
+    print(AudioPath + ' | ' + ListPath)
 
-    Args:
-        None
-    Returns:
-        directory
-    Raises:
-        TypeError: if n is not a number.
-        ValueError: if n is negative.
-    """
+    ## Handle Listings First ##
+    Listings = dict()
+    with open(inPath+ListPath, 'r') as ListFile:
+        lines = [line for line in ListFile]
+        if not parseLine(lines):
+            exit('Could not read anything in: ' + ListPath)
 
-    # Error check
-    if len(sys.argv) < 2:
-        exit('Please enter input folder containing audio file and timings')
 
-    # Return [input, output]
-    return [os.path.join( os.path.dirname(__file__) ,sys.argv[1]+'/'),
-            os.path.join( os.path.dirname(__file__) , 'Output/')]
+
 
 
 def main():
+    print('\n')
     # Set input and output paths
     inputPath, outputPath = getInOutPath()
 
     # Get and verify file names
-    audioFiles, audioTracks = getFiles(inputPath, outputPath)
+    audioFiles, audioLists = getFiles(inputPath)
 
-    print(audioFiles)
-    print(audioTracks)
+    #print(audioFiles)
+    #print(audioTracks)
 
-
-    #SplitTracks(inputPath, outputPath)
+    for i in range(len(audioFiles)):
+        SplitTrack(inputPath, audioFiles[i], audioLists[i])
 
     exit('Successfully Split')
+
 
 if __name__ == '__main__':
     main()

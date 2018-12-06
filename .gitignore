@@ -107,3 +107,6 @@ venv.bak/
 *.mp3
 *.txt
 Input/
+.vscode/
+__init__.py
+py
