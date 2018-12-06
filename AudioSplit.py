@@ -32,6 +32,7 @@ __email__ = "fsmith2017@gmail.com"
 __status__ = "Development"
 
 from fileutils import *
+import subprocess as sp
 
 class Track(object):
     def __init__(self, trackName, length, metadata):
@@ -43,7 +44,7 @@ class Track(object):
         print('exporting...')
 
 
-def SplitTrack(inPath, AudioPath, ListPath):
+def SplitTracks(inPath, AudioFiles, AudioLists):
 
     """Returns a list of valid audio files and track listings
 
@@ -51,15 +52,29 @@ def SplitTrack(inPath, AudioPath, ListPath):
         AudioPath -- the path of the audio file
         ListingPath -- the path of the listing file
     """
-    print('vv' + '---'*20 + 'vv')
-    print(AudioPath + ' | ' + ListPath)
+
+    ## Error check
+    if len(AudioFiles) < 1:
+        exit('No audio files found')
 
     ## Handle Listings First ##
     Listings = dict()
-    with open(inPath+ListPath, 'r') as ListFile:
-        lines = [line for line in ListFile]
-        if not parseLine(lines):
-            exit('Could not read anything in: ' + ListPath)
+    for i in range(len(AudioFiles)):
+
+        ListPath = AudioLists[i]
+        AudioPath = AudioFiles[i]
+
+        # print('vv' + '---'*20 + 'vv')
+        # print(AudioPath + ' | ' + ListPath)
+
+        with open(inPath+ListPath, 'r') as ListFile:
+            lines = [line for line in ListFile]
+            songs = parseLines(lines)
+            if not songs:
+                exit('Could not read anything in: ' + ListPath)
+            Listings[AudioPath] = songs
+    
+    printDict(Listings)
 
 
 
@@ -76,8 +91,7 @@ def main():
     #print(audioFiles)
     #print(audioTracks)
 
-    for i in range(len(audioFiles)):
-        SplitTrack(inputPath, audioFiles[i], audioLists[i])
+    SplitTracks(inputPath, audioFiles, audioLists)
 
     exit('Successfully Split')
 

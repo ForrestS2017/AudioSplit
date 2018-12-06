@@ -40,7 +40,7 @@ def getInOutPath():
     return [os.path.join( os.path.dirname(__file__) ,sys.argv[1]+'/'),
             os.path.join( os.path.dirname(__file__) , 'Output/')]
 
-def parseLine(lines):
+def parseLines(lines):
     """Takes generic Track listing (w,w/o hyphen) and returns [Title, timestamp, lenth]
 
         Keyword arguments:
@@ -56,17 +56,23 @@ def parseLine(lines):
         temp = ""
         s = re.findall(r'^([0-9][0-9]):([0-9][0-9])( *-* *)([a-zA-Z0-9_ -]*$)',line)
         # [min, sec, separator, title]
-        currentSong = [s[0][0]+':'+s[0][1], s[0][3]]
+        currentSong = [s[0][3], s[0][0]+':'+s[0][1]]
         songs.append(currentSong)
     
     # Get times of each song
     for i in range(len(songs)):
         if i < len(songs) -1:
-            start = 60*int(songs[i][0][:2]) + int(songs[i][0][3:])
-            end = 60*int(songs[i+1][0][:2]) + int(songs[i+1][0][3:])
+            start = 60*int(songs[i][1][:2]) + int(songs[i][1][3:])
+            end = 60*int(songs[i+1][1][:2]) + int(songs[i+1][1][3:])
             songs[i].append(end-start)
-    print(*songs, sep='\n')
+    #print(*songs, sep='\n')
 
     # TODO - Get last song length
 
-    return [lines]
+    return songs
+
+def printDict(input):
+    for item in input:
+        print(item)
+        for entry in input[item]:
+            print('\t',entry)
