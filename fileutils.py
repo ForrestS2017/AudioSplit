@@ -34,6 +34,13 @@ def getInOutPath():
     if len(sys.argv) < 2:
         exit('Please enter input folder containing audio file and timings')
 
+    dirName = 'Output'
+ 
+    if not os.path.exists(dirName):
+        os.mkdir(dirName)
+        if os.path.exists(dirName): print('Directory {} created'.format(dirName))
+
+
     # Return [input, output]
     return [os.path.join( os.path.dirname(__file__) ,sys.argv[1]+'/'),
             os.path.join( os.path.dirname(__file__) , 'Output/')]
@@ -48,6 +55,7 @@ def parseLines(lines):
     if len(lines) < 1 or lines == None:
         return -1
     songs = []
+    timing = 0
     # Parse each line into 
     for line in lines:
         length = len(line)
@@ -63,18 +71,16 @@ def parseLines(lines):
     # Get times of each song
     for i in range(len(songs)):
         if i < len(songs) -1:
-            #start = 360*int(songs[i][1][:2]) + 60*int(songs[i][1][2:] + int(songs[i][1][3:])
-            #end = 360*int(songs[i+1][1][:2]) + 60*int(songs[i+1][1][2:] + int(songs[i+1][1][3:])
             start = songs[i][1].split(':')
             start = 360*int(start[0]) + 60 * int(start[1]) + int(start[2])
             end = songs[i+1][1].split(':')
             end = 360*int(end[0]) + 60 * int(end[1]) + int(end[2])
+            timing += end - start
             songs[i].append(end-start)
-    #print(*songs, sep='\n')
 
     # TODO - Get last song length
 
-    return songs
+    return songs, timing
 
 def printDict(input):
     for item in input:
