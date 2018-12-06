@@ -1,4 +1,4 @@
-import os.path, sys, re, ffmpeg
+import os.path, sys, re, ffmpeg, subprocess as sp
 
 def getFiles(inputPath):
     """Returns a list of valid audio files and track listings
@@ -81,6 +81,39 @@ def parseLines(lines):
     # TODO - Get last song length
 
     return songs, timing
+
+def splitExport(inputPath, outputPath, Listings):
+    """Takes input and output path and the track list to export the individual tracks
+
+        Keyword arguments:
+            lines - strings of track listing
+    """
+
+    ## Error check
+    if not inputPath or not outputPath or not Listings:
+        exit('Error passing listings')
+
+    commandString = 'ffmpeg -i {tr} -ss {st} -t {ln} -acodec copy {nm}.mp3'
+    
+
+    for key in dict.keys(Listings):
+        albumTitle = key[:-4]
+        albumFolder = outputPath + albumTitle
+        #print(albumFolder)
+        ## Creat album folder in Output/ if DNE
+        if not os.path.exists(albumFolder):
+            os.mkdir(albumFolder)
+
+        for item in Listings[key]:
+            source = '"' + inputPath + key + '"'
+            start = item[1]
+            length = item[2]
+            name = '"' + albumFolder + '/' + item[0] + '"'
+            #print(name)
+            command = commandString.format(tr=source, st=start, ln = length, nm=name)
+            sp.call(command, shell=True)
+
+    return
 
 def printDict(input):
     for item in input:

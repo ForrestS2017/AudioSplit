@@ -32,7 +32,6 @@ __email__ = "fsmith2017@gmail.com"
 __status__ = "Development"
 
 from fileutils import *
-import subprocess as sp
 from mutagen.mp3 import MP3
 
 class Track(object):
@@ -73,17 +72,8 @@ def SplitTracks(inputPath, outputPath, AudioFiles, AudioLists):
             songs[len(songs)-1].append(int(MP3(inputPath+AudioPath).info.length)-timing+1)
             Listings[AudioPath] = songs
 
-    ## Execute w/ ffmpeg
-    commandString = 'ffmpeg -i {tr} -ss {st} -t {ln} -acodec copy {nm}.mp3'
-    
-    for key in dict.keys(Listings):
-        for item in Listings[key]:
-            source = '"' + inputPath + key + '"'
-            start = item[1]
-            length = item[2]
-            name = '"' + outputPath + item[0] + '"'
-            command = commandString.format(tr=source, st=start, ln = length, nm=name)
-            sp.call(command, shell=True)
+    ## Execute w/ ffmpeg    
+    splitExport(inputPath, outputPath, Listings)
 
     printDict(Listings)
 
