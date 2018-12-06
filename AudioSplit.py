@@ -74,10 +74,19 @@ def SplitTracks(inPath, AudioFiles, AudioLists):
                 exit('Could not read anything in: ' + ListPath)
             Listings[AudioPath] = songs
     
+    ## Execute w/ ffmpeg
+    commandString = 'ffmpeg -i {tr} -acodec copy -ss {st} -to {en} {nm}.mp3'
+    for key in dict.keys(Listings):
+        for item in Listings[key]:
+            source = inPath + key
+            start = item[1]
+            end = ''
+            if item[2]: end = item[2]
+            name = item[0]
+            command = commandString.format(tr=source, st=start, en=end, nm=name)
+            sp.call(command, shell=True)
+
     printDict(Listings)
-
-
-
 
 
 def main():
@@ -87,9 +96,6 @@ def main():
 
     # Get and verify file names
     audioFiles, audioLists = getFiles(inputPath)
-
-    #print(audioFiles)
-    #print(audioTracks)
 
     SplitTracks(inputPath, audioFiles, audioLists)
 

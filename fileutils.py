@@ -1,6 +1,4 @@
-import os.path
-import sys
-import re
+import os.path, sys, re, ffmpeg
 
 def getFiles(inputPath):
     """Returns a list of valid audio files and track listings
@@ -54,16 +52,23 @@ def parseLines(lines):
     for line in lines:
         length = len(line)
         temp = ""
-        s = re.findall(r'^([0-9][0-9]):([0-9][0-9])( *-* *)([a-zA-Z0-9_ -]*$)',line)
-        # [min, sec, separator, title]
-        currentSong = [s[0][3], s[0][0]+':'+s[0][1]]
+        s = re.findall(r'^([0-9][0-9]:)*([0-9][0-9]):([0-9][0-9])( *-* *)([a-zA-Z0-9_ -]*$)',line)
+        # [hour, min, sec, separator, title]
+        if s[0][0] == '':
+            currentSong = [s[0][4].strip(), ('00:'+s[0][1]+':'+s[0][2]).strip()]
+        else:
+            currentSong = [s[0][4].strip(), (s[0][0][:2]+':'+s[0][1]+':'+s[0][2]).strip()]
         songs.append(currentSong)
     
     # Get times of each song
     for i in range(len(songs)):
         if i < len(songs) -1:
-            start = 60*int(songs[i][1][:2]) + int(songs[i][1][3:])
-            end = 60*int(songs[i+1][1][:2]) + int(songs[i+1][1][3:])
+            #start = 360*int(songs[i][1][:2]) + 60*int(songs[i][1][2:] + int(songs[i][1][3:])
+            #end = 360*int(songs[i+1][1][:2]) + 60*int(songs[i+1][1][2:] + int(songs[i+1][1][3:])
+            start = songs[i][1].split(':')
+            start = 360*int(start[0]) + 60 * int(start[1]) + int(start[2])
+            end = songs[i+1][1].split(':')
+            end = 360*int(end[0]) + 60 * int(end[1]) + int(end[2])
             songs[i].append(end-start)
     #print(*songs, sep='\n')
 
