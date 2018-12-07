@@ -93,7 +93,7 @@ def splitExport(inputPath, outputPath, Listings):
     if not inputPath or not outputPath or not Listings:
         exit('Error passing listings')
 
-    commandString = 'ffmpeg -i {tr} -ss {st} -t {ln} -metadata album="{al}"  -acodec copy {nm}.mp3'
+    commandString = 'ffmpeg -i {tr} -ss {st} -t {ln} -metadata album="{al}" -metadata author="{ar}" -metadata track="{tk}" -acodec copy {nm}.mp3'
     
 
     for key in dict.keys(Listings):
@@ -103,16 +103,21 @@ def splitExport(inputPath, outputPath, Listings):
         ## Create album folder in Output/ if DNE
         if not os.path.exists(albumFolder):
             os.mkdir(albumFolder)
-
+        index = 1
         for item in Listings[key]:
             source = '"' + inputPath + key + '"'
             start = item[1]
             length = item[2]
             name = '"' + albumFolder + '/' + item[0] + '"'
-            album = albumTitle
             
+            #metadata
+            s = re.findall(r'^([a-zA-Z0-9_ -]*) - ([a-zA-Z0-9_ -]*)',albumTitle)
+            artist = s[0][0]
+            album = s[0][1]
+            track = index
+            index += 1 # iterate for next track
             ## Handle command line arguments with ffmpeg. Allow overwriting
-            command = commandString.format(tr=source, st=start, ln = length, al=album nm=name)
+            command = commandString.format(tr=source, st=start, ln = length, al=album, ar=artist, tk=track, nm=name)
             with sp.Popen([command],stdin=sp.PIPE, stdout=sp.PIPE, shell=True, universal_newlines=True) as p:
                 p.communicate('y') # allow overwiting
 
