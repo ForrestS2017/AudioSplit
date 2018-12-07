@@ -68,7 +68,7 @@ def parseLines(lines):
             currentSong = [s[0][4].strip(), (s[0][0][:2]+':'+s[0][1]+':'+s[0][2]).strip()]
         songs.append(currentSong)
     
-    # Get times of each song
+    # Get times of each song. Last song length calculated outside
     for i in range(len(songs)):
         if i < len(songs) -1:
             start = songs[i][1].split(':')
@@ -77,8 +77,6 @@ def parseLines(lines):
             end = 360*int(end[0]) + 60 * int(end[1]) + int(end[2])
             timing += end - start
             songs[i].append(end-start)
-
-    # TODO - Get last song length
 
     return songs, timing
 
@@ -115,7 +113,8 @@ def splitExport(inputPath, outputPath, Listings):
             artist = s[0][0]
             album = s[0][1]
             track = index
-            index += 1 # iterate for next track
+            index += 1 # iterate for next 
+            
             ## Handle command line arguments with ffmpeg. Allow overwriting
             command = commandString.format(tr=source, st=start, ln = length, al=album, ar=artist, tk=track, nm=name)
             with sp.Popen([command],stdin=sp.PIPE, stdout=sp.PIPE, shell=True, universal_newlines=True) as p:
