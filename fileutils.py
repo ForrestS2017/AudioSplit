@@ -99,8 +99,8 @@ def splitExport(inputPath, outputPath, Listings):
     for key in dict.keys(Listings):
         albumTitle = key[:-4]
         albumFolder = outputPath + albumTitle
-        #print(albumFolder)
-        ## Creat album folder in Output/ if DNE
+        
+        ## Create album folder in Output/ if DNE
         if not os.path.exists(albumFolder):
             os.mkdir(albumFolder)
 
@@ -109,9 +109,11 @@ def splitExport(inputPath, outputPath, Listings):
             start = item[1]
             length = item[2]
             name = '"' + albumFolder + '/' + item[0] + '"'
-            #print(name)
+            
+            ## Handle command line arguments with ffmpeg. Allow overwriting
             command = commandString.format(tr=source, st=start, ln = length, nm=name)
-            sp.call(command, shell=True)
+            with sp.Popen([command],stdin=sp.PIPE, stdout=sp.PIPE, shell=True, universal_newlines=True) as p:
+                p.communicate('y') # allow overwiting
 
     return
 
