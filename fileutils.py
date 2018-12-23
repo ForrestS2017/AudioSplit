@@ -60,7 +60,7 @@ def parseLines(lines):
     for line in lines:
         length = len(line)
         temp = ""
-        s = re.findall(r'^([0-9][0-9]:)*([0-9][0-9]):([0-9][0-9])( *-* *)([a-zA-Z0-9_ -]*$)',line)
+        s = re.findall(r'^([0-9]{1,2}:)*([0-9]{1,2}):([0-9]{1,2})( *-* *)(.*$)',line)
         # [hour, min, sec, separator, title]
         if s[0][0] == '':
             currentSong = [s[0][4].strip(), ('00:'+s[0][1]+':'+s[0][2]).strip()]

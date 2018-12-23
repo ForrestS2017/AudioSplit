@@ -60,7 +60,7 @@ def SplitTracks(inputPath, outputPath, AudioFiles, AudioLists):
     ## Handle Listings First ##
     Listings = dict()
     for i in range(len(AudioFiles)):
-
+        print(AudioFiles[i])
         ListPath = AudioLists[i]
         AudioPath = AudioFiles[i]
 
