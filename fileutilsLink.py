@@ -1,5 +1,4 @@
 import os.path, sys, re, ffmpeg, subprocess as sp
-from pytube import YouTube as yt
 
 def getFiles(inputPath):
     """Returns a list of valid audio files and track listings
@@ -33,23 +32,10 @@ def getInOutPath():
 
     # Error check
     if len(sys.argv) < 2:
-        print('Please enter input folder or link containing audio file and timings')
+        exit('Please enter input folder containing audio file and timings')
 
-    
-    # Handle links over folder names
-    if "tube.com" in sys.argv[1]:
-        # If no input folder, create one for temp download
-        dirName = 'Input'
-        if not os.path.exists(dirName):
-            os.mkdir(dirName)
-            if os.path.exists(dirName): print('Directory {} created'.format(dirName))
-        
-        # Download video and create listing file
-        #yt(sys.argv[1]).streams.first().download('/' + dirName)
-
-
-    # Create output directory if non-existent
     dirName = 'Output'
+ 
     if not os.path.exists(dirName):
         os.mkdir(dirName)
         if os.path.exists(dirName): print('Directory {} created'.format(dirName))

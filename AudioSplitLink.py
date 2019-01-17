@@ -32,7 +32,7 @@ __email__ = "fsmith2017@gmail.com"
 __status__ = "Development"
 
 from fileutils import *
-#from mutagen.mp3 import MP3
+from mutagen.mp3 import MP3
 
 class Track(object):
     def __init__(self, trackName, length, metadata):
