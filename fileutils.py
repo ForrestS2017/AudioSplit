@@ -1,5 +1,5 @@
 import os.path, sys, re, ffmpeg, subprocess as sp
-from pytube import YouTube as yt
+#from pytube import YouTube as yt
 
 def getFiles(inputPath):
     """Returns a list of valid audio files and track listings
@@ -79,19 +79,23 @@ def parseLines(lines):
         if s[0][0] == '':
             currentSong = [s[0][4].strip(), ('00:'+s[0][1]+':'+s[0][2]).strip()]
         else:
-            currentSong = [s[0][4].strip(), (s[0][0][:2]+':'+s[0][1]+':'+s[0][2]).strip()]
+            currentSong = [s[0][4].strip(), (s[0][0][:2]+s[0][1]+':'+s[0][2]).strip()]
+        print(currentSong)
         songs.append(currentSong)
     
     # Get times of each song. Last song length calculated outside
     for i in range(len(songs)):
+        print(songs[i])
         if i < len(songs) -1:
             start = songs[i][1].split(':')
+            print('start: ' + str(start))
             start = 360*int(start[0]) + 60 * int(start[1]) + int(start[2])
             end = songs[i+1][1].split(':')
+            print('end: ' + str(end))
             end = 360*int(end[0]) + 60 * int(end[1]) + int(end[2])
             timing += end - start
             songs[i].append(end-start)
-
+        print('Parsed: '+ str(songs[i]))
     return songs, timing
 
 def splitExport(inputPath, outputPath, Listings):
